@@ -1,0 +1,5 @@
+How to enable a USB ethernet card
+---------------------------------
+
+sudo networkctl up enp0s13f0u1u2c2
+sudo networkctl down wlan0

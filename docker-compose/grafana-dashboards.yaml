@@ -1,0 +1,13 @@
+apiVersion: 1
+
+providers:
+  - name: 'OpenTelemetry HTTP Metrics'
+    type: file
+    options:
+      path: /etc/grafana/otel-http-dashboard.json
+      foldersFromFilesStructure: false
+  - name: 'Spring HTTP Metrics'
+    type: file
+    options:
+      path: /etc/grafana/spring-http-dashboard.json
+      foldersFromFilesStructure: false

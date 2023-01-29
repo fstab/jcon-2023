@@ -1,0 +1,49 @@
+version: "3"
+services:
+  grafana:
+    #image: grafana/grafana:9.5.1
+    image: grafana/grafana:10.0.0
+    network_mode: host
+    ports:
+      - "3000:3000"
+    volumes: 
+      - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/grafana-datasources.yaml
+      - ./grafana-dashboards.yaml:/etc/grafana/provisioning/dashboards/grafana-dashboards.yaml
+      - ./otel-http-dashboard.json:/etc/grafana/otel-http-dashboard.json
+      - ./spring-http-dashboard.json:/etc/grafana/spring-http-dashboard.json
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    network_mode: host
+    ports:
+      - "9090:9090"
+    command:
+      - --web.enable-remote-write-receiver
+      - --enable-feature=exemplar-storage
+      - --config.file=/etc/prometheus/prometheus.yml
+  tempo:
+    image: grafana/tempo:2.1.1
+    network_mode: host
+    ports:
+      - "3200:3200"
+      - "4417:4417"
+      - "4418:4418"
+      - "9096:9096"
+    volumes:
+      - ./tempo-config.yaml:/config.yaml
+    command:
+      - --config.file=/config.yaml
+  loki:
+    image: grafana/loki:2.8.2
+    network_mode: host
+    ports:
+      - "3100:3100"
+  collector:
+    image: otel/opentelemetry-collector-contrib:0.79.0
+    network_mode: host
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - ./otelcol-config.yaml:/config.yaml
+    command:
+      - --config=file:/config.yaml
